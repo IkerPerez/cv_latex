@@ -1,0 +1,125 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[10pt]{article}
+
+
+% ------------------------------------------------------------------ %
+%     Packages                                                       %
+% ------------------------------------------------------------------ %
+
+% Numerical Stuff
+\usepackage{calc}
+
+% Drawings
+\usepackage{tikz}
+\usetikzlibrary{calc,positioning,backgrounds,matrix}
+
+% Fonts
+\usepackage[scaled]{helvet}
+\usepackage[T1]{fontenc}
+\renewcommand{\familydefault}{\sfdefault}
+
+
+% ------------------------------------------------------------------ %
+%     Document Layout                                                %
+% ------------------------------------------------------------------ %
+
+% define Margin length
+\newlength\margin
+\setlength\margin{0.75cm}
+
+% set a4paper width minimal options
+\usepackage[margin=\margin,noheadfoot,a4paper]{geometry}
+
+% define Side panel width
+\newlength\sidewidth
+\setlength\sidewidth{0.3\paperwidth-\margin}
+
+% define Main panel width
+\newlength\mainwidth
+\setlength\mainwidth{\paperwidth-4\margin-\sidewidth}
+
+% Default Indend
+\setlength{\topskip}{0pt}
+\usepackage{parskip}
+
+
+% ------------------------------------------------------------------ %
+%     Colours                                                        %
+% ------------------------------------------------------------------ %
+
+\definecolor{sidePanel}{HTML}{e8ede4}
+\definecolor{lines}{HTML}{91a390}
+
+% Text
+\definecolor{med-gray}{gray}{0.2}
+\definecolor{dark-gray}{gray}{0.1}
+
+% Default text color
+\color{dark-gray}
+
+
+% ------------------------------------------------------------------ %
+%     Macros                                                         %
+% ------------------------------------------------------------------ %
+
+\makeatletter
+\def\hrulefill{\color{lines}\leavevmode\leaders\hrule height 1.5pt\hfill\kern\z@}
+\newcommand*\ruleline[1]{\makebox[\linewidth]{\raisebox{-.5ex}{\textbf{\large\scshape\color{med-gray} #1}}\hspace{1ex}\hrulefill}\\[-5pt]}
+\makeatother
+
+
+% ------------------------------------------------------------------ %
+%     Document                                                       %
+% ------------------------------------------------------------------ %
+
+\begin{document}
+
+% ---------- %
+% Side Panel %
+% ---------- %
+
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[sidePanel] (current page.north west) 
+    rectangle ++(\sidewidth+2\margin,-\paperheight);
+\end{tikzpicture}
+
+\vspace*{\fill}
+\begin{minipage}{\sidewidth}
+  \begin{center}
+    {\LARGE\bf\color{med-gray} Dr Iker Perez}\\[0.5cm]
+    
+	Research Data Scientist   \\[0.5cm]	
+  	
+  \end{center}
+
+
+\ruleline{Profile} 
+
+Principal Scientist at Featurespace. Passionate about computational stats and probability theory. Learning from great software developers. \\ [-6pt]
+
+Time allowing, I review papers for NIPS, ICML and similar conferences.
+
+
+
+
+
+
+
+
+
+  	
+\end{minipage}
+\vspace*{\fill}
+
+
+
+
+
+
+
+
+
+
+\end{document}
