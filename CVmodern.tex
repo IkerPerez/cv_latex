@@ -1,7 +1,7 @@
-% !TEX TS-program = xelatex
+% !TEX TS-program = pdflatex
 % !TEX encoding = UTF-8 Unicode
 
-\documentclass[10pt]{article}
+\documentclass[11pt]{article}
 
 
 % ------------------------------------------------------------------ %
@@ -15,34 +15,74 @@
 \usepackage{tikz}
 \usetikzlibrary{calc,positioning,backgrounds,matrix}
 
+% Icons
+\usepackage{fontawesome}
+
 % Fonts
-\usepackage[scaled]{helvet}
+\usepackage[scaled=0.95]{helvet}
 \usepackage[T1]{fontenc}
 \renewcommand{\familydefault}{\sfdefault}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{%
+    pdfborder = {0 0 0}
+}
+
+% Changing margins for subsets of text
+\usepackage{changepage}
 
 
 % ------------------------------------------------------------------ %
 %     Document Layout                                                %
 % ------------------------------------------------------------------ %
 
-% define Margin length
+% Define Margin length
 \newlength\margin
 \setlength\margin{0.75cm}
 
-% set a4paper width minimal options
+% Set a4paper width minimal options
 \usepackage[margin=\margin,noheadfoot,a4paper]{geometry}
 
-% define Side panel width
+% Define Side panel width
 \newlength\sidewidth
-\setlength\sidewidth{0.3\paperwidth-\margin}
+\setlength\sidewidth{0.32\paperwidth-\margin}
 
-% define Main panel width
+% Icon sizes under name and title
+\newlength\iconlarge
+\setlength\iconlarge{0.6cm}
+
+% Separation between entries in side panel
+\newlength\sidePanelsep
+\setlength\sidePanelsep{0.3cm}
+\newlength\sidePanelsepShort
+\setlength\sidePanelsepShort{0.1cm}
+
+% Define Main panel width
 \newlength\mainwidth
 \setlength\mainwidth{\paperwidth-4\margin-\sidewidth}
 
-% Default Indend
+% Icon spacing in main timeline
+\newlength\timelinespace
+\setlength\timelinespace{0.4cm}
+
+% Spacing between main sections
+\newlength\betweensectionsep
+\setlength\betweensectionsep{0.9cm}
+
+% Spacing between items in main sections
+\newlength\sectionsep
+\setlength\sectionsep{0.5cm}
+
+% Default Indent
 \setlength{\topskip}{0pt}
 \usepackage{parskip}
+
+% Line spacing
+\renewcommand{\baselinestretch}{1}
+
+% Empty pages
+\pagestyle{empty}
 
 
 % ------------------------------------------------------------------ %
@@ -51,6 +91,7 @@
 
 \definecolor{sidePanel}{HTML}{e8ede4}
 \definecolor{lines}{HTML}{91a390}
+\definecolor{hearts}{HTML}{e35656}
 
 % Text
 \definecolor{med-gray}{gray}{0.2}
@@ -64,10 +105,101 @@
 %     Macros                                                         %
 % ------------------------------------------------------------------ %
 
+% ruleline
 \makeatletter
-\def\hrulefill{\color{lines}\leavevmode\leaders\hrule height 1.5pt\hfill\kern\z@}
-\newcommand*\ruleline[1]{\makebox[\linewidth]{\raisebox{-.5ex}{\textbf{\large\scshape\color{med-gray} #1}}\hspace{1ex}\hrulefill}\\[-5pt]}
+\def\hrulefill{
+	\color{lines}\leavevmode\leaders\hrule height 1.5pt\hfill\kern\z@}
+\newcommand*\ruleline[1]{
+	\makebox[\linewidth]{\raisebox{-.5ex}{\textbf{\large\scshape\color{med-gray} #1}}\hspace{1ex}\hrulefill}\\}
 \makeatother
+
+% cvTitle
+\newcommand{\cvTitle}[2]{
+	{\huge\bf\color{med-gray} #1}\\[12pt]   
+	\large #2\\[18pt]
+}
+
+% contactInfo
+\newcommand{\contactInfo}[2]{\makebox[15pt]{\centering #1} #2\\[\sidePanelsep]}
+
+% education
+\newcommand{\education}[3]{
+	\textbf{#1} \hfill #2\\[\sidePanelsepShort]
+	{\small\em #3}\\[\sidePanelsep]
+}
+
+% skills
+\newcommand{\skills}[2]{
+	\textbf{#1}:\\[\sidePanelsepShort]
+	{#2}\\[\sidePanelsep]
+}
+\newcommand{\skillsOneLine}[2]{
+	\textbf{#1}: \hfill {#2}\\[\sidePanelsep]
+}
+
+
+% ------------------------------------------------------------------ %
+%     TikZ Macros                                                    %
+% ------------------------------------------------------------------ %
+
+% cvSection
+\newcommand{\cvSection}[5]{
+	\path let \p1=(#1) in node[sectionTitle] at (0,\y1-#2) (#3) {\textbf{\large\scshape\color{med-gray} #4}};
+  	\node[left=\timelinespace of #3, anchor=center] {#5};
+  	\draw[line width=1.5pt,lines]
+  		let \p1=(#3.south west), \p2=(current page.east) in (\x1,\y1-0.1cm) to (\x2,\y1-0.1cm);
+}
+
+% textCV
+\newcommand{\textCV}[3]{
+	\node[below=\sectionsep of #1.south west, eventdottext, align=justify] (#2) {#3};
+}
+
+% employer
+\newcommand{\employer}[4]{
+	\path let \p1=(#1.south) in node[eventdottext] at (0, \y1-\sectionsep) (#2){
+		{\bf#3}, {\small\em #4}
+	};
+	\node[left=\timelinespace of #2.west, timedot]{};
+}
+
+% role
+\newcommand{\role}[5]{
+	\path let \p1=(#1.south) in node[eventdottextindent, align=justify] at (0.5\timelinespace, \y1-0.5\sectionsep)  (#2){
+		\small\textbf{#3 \hfill #4} \\ #5
+	};
+}
+	
+
+% ------------------------------------------------------------------ %
+%     TikZ styles                                                    %
+% ------------------------------------------------------------------ %
+
+\tikzset{
+	sectionTitle/.style={
+	  	anchor=north west,
+	  	align=left,
+	  	},
+	eventdottext/.style = {
+  		text width=\mainwidth-\timelinespace,
+  		anchor=north west,
+		},
+	eventdottextindent/.style = {
+  		text width=\mainwidth-1.5\timelinespace,
+  		anchor=north west,
+		},
+	invisibletimedot/.style = {
+		circle,
+  		minimum width=3pt,
+  		anchor=center,
+	},
+	timedot/.style = {
+		invisibletimedot,
+		med-gray,
+  		draw,
+  		fill,
+	},
+}
 
 
 % ------------------------------------------------------------------ %
@@ -87,39 +219,159 @@
 
 \vspace*{\fill}
 \begin{minipage}{\sidewidth}
-  \begin{center}
-    {\LARGE\bf\color{med-gray} Dr Iker Perez}\\[0.5cm]
-    
-	Research Data Scientist   \\[0.5cm]	
+
+	%%% NAME AND SOCIAL NETWORKS %%%
+
+	\begin{center}
+    	\cvTitle{Dr Iker Perez}{Research Data Scientist}
+
+		% Add Icon Links
+		\href{https://uk.linkedin.com/in/ikerperez}
+			{\includegraphics[height=\iconlarge]{icons/linkedin}} \hspace{1pt} 
+		\href{https://github.com/IkerPerez}
+			{\includegraphics[height=\iconlarge]{icons/github}} \hspace{-2pt}
+		\href{https://www.kaggle.com/ikertxo1986}
+			{\includegraphics[height=\iconlarge]{icons/kaggle}} \hspace{-4pt}
+		\href{https://scholar.google.co.uk/citations?user=B1Z6c1wAAAAJ&hl=en}
+			{\includegraphics[height=\iconlarge]{icons/googlescholar}} \hspace{0pt}
+		\href{https://www.researchgate.net/profile/Iker_Perez3}
+			{\includegraphics[height=\iconlarge]{icons/rg}} 
+  	\end{center}
+  
+  	\vspace{50pt}
+
+	%%% CONTACT DETAILS %%$ 
+ 
+ 	\ruleline{Contact} 
+
+	\contactInfo{\faHome}{Magic Town, Cambridgeshire, UK}
+	\contactInfo{\faEnvelopeSquare}{\href{...}{email@site.com}}
+	\contactInfo{\faPhone}{+44 (0) 0000 000000}
+	\contactInfo{\faFirefox}{\href{https://ikerperez.wordpress.com/}{ikerperez.wordpress.com}}
+  	\vspace{5pt}
+
+	%%% EDUCATION %%%
+
+	\ruleline{Education}
+
+	\education{PhD in Mathematics}{2015}{University of Nottingham, UK}
+	\education{MSc in Statistics}{2011}{University of Nottingham, UK}
+	\education{Graduate in Mathematics}{2010}{University of the Basque Country, Spain}
+	
+	%%% CODING %%%
+
+  	\ruleline{Skills}  	
   	
-  \end{center}
+  	\skills{Coding}{
+		{\em Scientific}: \hfill R, Matlab \\[\sidePanelsepShort]
+		{\em General}: \hfill Python {\footnotesize\color{hearts}\faHeart}, Java, C++
+	}
+	\skills{Libraries}{
+		{\em ML}: \hfill Tensorflow {\footnotesize\color{hearts}\faHeart}, Keras, Scikit\\[\sidePanelsepShort]
+		{\em Stats:} \hfill Stan, Statsmodels, Jags\\[\sidePanelsepShort]
+	  	{\em Data:} \hfill Pandas, PySpark, Numpy\\[\sidePanelsepShort]
+		{\em UI:} \hfill Plotly, Dash, Shiny
+	}
+	\skillsOneLine{DB}{
+		MySQL, Clickhouse, MongoDB
+	}
+	\skillsOneLine{Misc}{
+		Git, Docker, AWS
+	}
+	\skillsOneLine{OS}{
+		Ubuntu/Debian, Windows, Mac
+	}
 
+  	%%% LANGUAGES %%%
 
-\ruleline{Profile} 
-
-Principal Scientist at Featurespace. Passionate about computational stats and probability theory. Learning from great software developers. \\ [-6pt]
-
-Time allowing, I review papers for NIPS, ICML and similar conferences.
-
-
-
-
-
-
-
-
-
+  	\ruleline{Languages}  	
   	
+  	English, Spanish and Basque.
+
 \end{minipage}
 \vspace*{\fill}
 
 
+% ---------- %
+% Main Panel %
+% ---------- %
 
+\begin{tikzpicture}[
+  	every node/.style={
+    	inner sep=0pt,
+    	outer sep=0pt
+  	},
+  	remember picture,
+  	overlay,
+  	shift={($(current page.north west) +(\sidewidth+3\margin+\timelinespace,-\margin)$)}]  
 
+	%%% PROFILE %%%
+	
+	\cvSection{0, 0}{0}{node_profile}{Profile}{\faUser}
+	\textCV{node_profile}{node_profile_content}{
+		Principal Scientist at Featurespace. Passionate about computational stats and probability theory. Interested in explainable AI and model fairness. Learning from great software developers.
+	};
+		
+  	%%% EXPERIENCE %%% 	
+	
+	\cvSection{node_profile_content.south west}{\betweensectionsep}{node_experience}{Professional Experience}{\faGears}
+	\textCV{node_experience}{node_experience_ds}{
+		\textbf{Data Science}: Experience in finance (credit scoring, transaction fraud), computer vision (attributions, saliency), sports (forecasting outcomes), navigation (indoor positioning) and healthcare (workload estimation).
+	};
+	\textCV{node_experience_ds}{node_experience_ml}{
+		\textbf{Machine Learning}: Advanced understanding of regression analysis, trees, bagging \& boosting, graphical models and neural networks, incl. embeddings, recurrent architectures and attention mechanisms.
+	};
+	\textCV{node_experience_ml}{node_experience_re}{	
+		\textbf{Research}: Expertise in stochastic control and Bayesian computational statistics, applied to optimization problems and probabilistic inference.
+	};
+	\textCV{node_experience_re}{node_experience_sd}{	
+		\textbf{Software Development}: Serviced end-to-end solutions with primitive services in cloud infrastructures. Storage, etl, compute, networking and dashboarding. Experienced with testing, CI/CD and agile development.
+	};
+		
+  	%%% EMPLOYMENT %%% 
+  	
+	\cvSection{node_experience_sd.south west}{\betweensectionsep}{node_employment}{Recent Employment}{\faBriefcase}
+	\employer{node_employment}{featurespace}{Featurespace}{Cambridge, United Kingdom}
+ 	\role{featurespace}{principal_featurespace}{Principal Research Scientist}{Jan 2022 - Current}{
+		Identify opportunities for innovation. Define, supervise and contribute to research efforts in fraud prevention. Design and oversee machine learning functionalities in our hub and platforms.
+ 	}	
 
+	\employer{principal_featurespace}{astrazenca}{AstraZeneca}{Cambridge, United Kingdom}
+ 	\role{astrazenca}{senior_AZ}{Senior Data Scientist}{Aug 2021 - Jan 2022}{
+		Governance of scalable machine learning systems. Supervise software design patterns for the provision of an operations research optimisation engine. 
+ 	}
 
+	\employer{senior_AZ}{featurespace2}{Featurespace}{Cambridge, United Kingdom}
+ 	\role{featurespace2}{research_featurespace}{Research Scientist}{Feb 2020 - Jul 2021}{
+		Research and dissemination of methodology for card fraud prevention and anti money laundering. Prototype tools to be used within delivery pipelines.
+ 	}
 
+ 	\employer{research_featurespace}{oakbrook}{Oakbrook Finance}{Nottingham, United Kingdom}
+	\role{oakbrook}{senior_oakbrook}{Senior Data Scientist}{Jul 2019 - Jan 2020}{
+		Credit risk and customer management modelling. Design statistical model assessment tools, develop feature engineering and selection libraries.
+	}
+	
+ 	\employer{senior_oakbrook}{Uni_Notts}{University of Nottingham}{Nottingham, United Kingdom}
+	\role{Uni_Notts}{ass_prof}{Assistant Professor in Statistics \& Data Science}{Jan 2017 - Jul 2019}{
+		Research, supervision and teaching role based at the School of Mathematical Sciences. Develop Bayesian computational inferential methods targeted at epidemic and queueing systems.
+	}
+	\role{ass_prof}{res_fellow}{Research Fellow in Computer Science}{Oct 2015 - Dec 2016}{
+		Interdisciplinary role collaborating with medical practitioners. Design decision support systems to inform best practice in Out-of-Hours hospital care delivery.
+	}
 
+	\employer{res_fellow}{sportradar}{Sportradar UK}{London, United Kingdom}
+	\role{sportradar}{quant}{Quantitative Analyst}{Sep 2014 - Sep 2015}{
+		Development of predictive models for tennis, Australian rules football and basketball. Research techniques for applications. Support in implementation.
+	}
+
+  	%%% TIMELINE %%% 
+	
+	\node[left=\timelinespace of featurespace.west, invisibletimedot](start){};
+  	\node[left=\timelinespace of quant.south west, xshift=-0.5\timelinespace, invisibletimedot](end){};
+  	\draw[med-gray] (start.center) to (end.center);
+
+  
+\end{tikzpicture}
 
 
 \end{document}
