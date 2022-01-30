@@ -74,6 +74,16 @@
 \newlength\sectionsep
 \setlength\sectionsep{0.5cm}
 
+% Spacing across publications
+\newlength\publsep
+\setlength\publsep{0.08cm}
+\newlength\publcatsep
+\setlength\publcatsep{0.08cm}
+
+% Margin across itemize environment
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=15pt}
+
 % Default Indent
 \setlength{\topskip}{0pt}
 \usepackage{parskip}
@@ -155,6 +165,11 @@
 	\node[below=\sectionsep of #1.south west, eventdottext, align=justify] (#2) {#3};
 }
 
+% textCV
+\newcommand{\textCVfull}[3]{
+	\node[below=\sectionsep of #1.south west, eventdottextfull, align=justify] (#2) {\small #3};
+}
+
 % employer
 \newcommand{\employer}[4]{
 	\path let \p1=(#1.south) in node[eventdottext] at (0, \y1-\sectionsep) (#2){
@@ -198,6 +213,10 @@
 		med-gray,
   		draw,
   		fill,
+	},
+	eventdottextfull/.style = {
+  		text width=\textwidth-\timelinespace,
+  		anchor=north west,
 	},
 }
 
@@ -245,7 +264,7 @@
  	\ruleline{Contact} 
 
 	\contactInfo{\faHome}{Magic Town, Cambridgeshire, UK}
-	\contactInfo{\faEnvelopeSquare}{\href{...}{email@site.com}}
+	\contactInfo{\faEnvelopeSquare}{iker@myprivateemail.com}
 	\contactInfo{\faPhone}{+44 (0) 0000 000000}
 	\contactInfo{\faFirefox}{\href{https://ikerperez.wordpress.com/}{ikerperez.wordpress.com}}
   	\vspace{5pt}
@@ -370,8 +389,64 @@
   	\node[left=\timelinespace of quant.south west, xshift=-0.5\timelinespace, invisibletimedot](end){};
   	\draw[med-gray] (start.center) to (end.center);
 
-  
 \end{tikzpicture}
 
+\newpage
+
+% ------------- %
+% Research Page %
+% ------------- %
+
+\begin{tikzpicture}[
+	every node/.style={
+		inner sep=0pt,
+		outer sep=0pt
+	},
+	remember picture,
+	overlay,
+	shift={($(current page.north west) +(\margin+\timelinespace,-\margin)$)}]  
+
+	%%% PROFILE %%%
+
+	\cvSection{0, 0}{0}{node_publ}{Publications and Patents}{\faLightbulbO}
+	\textCVfull{node_publ}{node_publ_content}{
+		\textbf{Statistics and Probability:}\vspace{\publcatsep}
+		\begin{itemize}\setlength\itemsep{\publsep}
+		\item \textbf{Perez, I.} and Casale, G. (2021) \href{https://doi.org/10.1017/apr.2020.72}{\emph{Variational inference for Markovian queueing networks}, Advances in Applied Probability, 53 (3), 687--715.}
+		\item \textbf{Perez, I.}, Hodge, D. and Kypraios, T. (2018) \href{https://arxiv.org/abs/1703.03475}{\emph{Auxiliary variables for Bayesian inference in multi-class queueing networks}. Statistics and Computing,  28 (6), 1187--1200.}
+		\item \textbf{Perez, I.}, Hodge, D. and Le, H. (2016) \href{https://projecteuclid.org/euclid.aap/1465490754}{\emph{Markov decision process algorithms for wealth allocation problems with defaultable bonds}, Advances in Applied Probability, 48 (2), 392--405.}
+		\item \textbf{Perez, I.} and Le, H. (2015) \href{http://dx.doi.org/10.1137/130946800}{\emph{Time-randomized stopping problems for a family of utility functions}, SIAM Journal on Control and Optimization, 53 (3), 1328-1345.}
+		\end{itemize} \vspace{1.2\publcatsep}
+
+		\textbf{Computer Science:} \vspace{\publcatsep}
+		\begin{itemize} \setlength\itemsep{\publsep}
+		\item \textbf{Perez, I.}, Skalski, P., Barns-Graham, A., Wong, J. and Sutton D. (2021) \href{https://arxiv.org/abs/2107.08756}{\emph{Path integrals for the attribution of model uncertainties}, in submission.}
+		\item Zhu, L., Casale, G. and \textbf{Perez, I.} (2020) \href{https://doi.org/10.1016/j.peva.2020.102094}{\emph{Fluid approximation of closed queueing networks with discriminatory processor sharing}, Performance Evaluation, 139, 102094.}
+		\item \textbf{Perez, I.}, Brown, M., Pinchin, J., Martindale, S., Sharples, S., Shaw, D. and Blakey, J. (2016)  \href{http://authors.elsevier.com/sd/article/S0933365716301555}{\emph{Out of Hours workload management: Bayesian inference for decision support in secondary care}, Artificial Intelligence in Medicine,  73, 34--44.}
+		\item \textbf{Perez, I.}, Pinchin, J., Brown, M., Blum, J. and Sharples, S. (2016) \href{http://authors.elsevier.com/sd/article/S0957417416302846}{\emph{Unsupervised labelling of sequential data for location identification in indoor environments}, Expert Systems with Applications, 61, 386--393.}
+		\end{itemize} \vspace{1.2\publcatsep}	
+
+		\textbf{Engineering and interdisciplinary:} \vspace{\publcatsep}
+		\begin{itemize} \setlength\itemsep{\publsep}
+		\item Martindale, S., Golightly, D., Pinchin, J., Shaw, D., Blakey, J., \textbf{Perez, I.} and Sharples, S. (2018) \href{https://doi.org/10.1016/j.apergo.2019.05.011}{\emph{An interview analysis of coordination behaviours in Out-of-Hours secondary care}, Applied Ergonomics, 89. }
+		\item Pinchin, J., \textbf{Perez, I.}, and Sharples, S. (2017) \href{https://www.ion.org/publications/abstract.cfm?articleID=15058}{\emph{The geometry of place and activity}, Proceedings of the ION 2017 Pacific PNT Meeting, Honolulu, Hawaii, USA. }
+		\item Pinchin, J., Byrne, M., \textbf{Perez, I.},  Ward, A., Aldred, D., and Sharples, S. (2017) \href{https://www.ion.org/publications/abstract.cfm?articleID=15019}{\emph{Understanding visitors and their movements from WiFi}, Proceedings of the ION 2017 Pacific PNT Meeting, Honolulu, Hawaii, USA.} 
+		\item \textbf{Perez, I.}, Brown, M., Pinchin, J., Martindale, S., Sharples, S., Shaw, D. and Blakey, J. (2016) \emph{Informatics in Out of Hours Service Delivery: Methods and Applications to Inform Health Care Policy and Management}, Data for Policy 2016, Cambridge, UK.
+		\end{itemize} \vspace{1.2\publcatsep}
+
+		\textbf{Patents:} \vspace{\publcatsep}
+		\begin{itemize} \setlength\itemsep{\publsep}
+		\item Wong, K., Sutton, D., Barns-Graham, A. and \textbf{Perez, I.} (2021) \href{https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2022008131
+		}{\emph{Training a machine learning system for transaction data processing}, WO/2022/008131.}
+		\end{itemize} \vspace{1.2\publcatsep}	
+
+		\textbf{PhD Thesis:} \vspace{\publcatsep}
+		\begin{itemize} \setlength\itemsep{\publsep}
+		\item \textbf{Perez, I.} (2014) \href{http://eprints.nottingham.ac.uk/id/eprint/28395}{\emph{Results in stochastic control: Optimal prediction problems and Markov decision processes}, PhD Thesis, School of Mathematical Sciences, University of Nottingham.}
+		\end{itemize} \vspace{1.2\publcatsep}	
+	};
+
+
+\end{tikzpicture}
 
 \end{document}
